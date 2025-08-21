@@ -22,8 +22,23 @@ public class JwtService {
 
     public JwtService(@Value("${jwt.secret}") String secret,
                       @Value("${jwt.expiration}") long jwtExpiration) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        System.out.println("Raw JWT secret string length: " + secret.length());
+        System.out.println("Raw JWT secret string (first 10 chars): " + secret.substring(0, Math.min(secret.length(), 10)));
+        byte[] decodedKey = hexStringToByteArray(secret);
+        System.out.println("Decoded key byte array length: " + decodedKey.length);
+        this.key = Keys.hmacShaKeyFor(decodedKey);
         this.jwtExpiration = jwtExpiration;
+    }
+
+    // Utility method to convert hex string to byte array
+    private static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
     }
 
     // Generate token with role claim
