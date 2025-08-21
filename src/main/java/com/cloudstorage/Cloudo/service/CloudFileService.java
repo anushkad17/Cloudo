@@ -77,4 +77,9 @@ public class CloudFileService {
         if (filename == null || !filename.contains(".")) return "";
         return filename.substring(filename.lastIndexOf('.') + 1);
     }
+    public CloudFile getFile(UUID fileId) {
+        return cloudFileRepo.findById(fileId)
+                .orElseThrow(() -> new IllegalArgumentException("File not found"));
+    }
+
 }

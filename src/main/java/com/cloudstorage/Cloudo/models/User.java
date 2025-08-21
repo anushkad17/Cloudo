@@ -3,11 +3,12 @@ package com.cloudstorage.Cloudo.models;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -21,6 +22,7 @@ import java.util.UUID;
         @Index(name = "idx_email_unique", columnList = "email", unique = true)
 })
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
@@ -45,33 +47,29 @@ public class User implements UserDetails {
         this.createdAt = LocalDateTime.now();
     }
 
-    // ===== Overrides for Spring Security =====
-
+    // ✅ Spring Security methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // If you're not using roles yet, return an empty list
-        return Collections.emptyList();
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // set to false if needed
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // set to false if needed
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // set to false if needed
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // set to false if user is deactivated
+        return true;
     }
-
-
 }
